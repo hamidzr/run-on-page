@@ -16,6 +16,7 @@ if (argv.srcPath) {
 } else if (argv.src) {
   srcCode = argv.src;
 } else {
+  console.error('missing source code. --url, --src or --srcPath');
   process.exit(1);
 }
 
