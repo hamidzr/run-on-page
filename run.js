@@ -7,19 +7,21 @@ Run a source code on web page. The source code must define a main function with 
 const puppeteer = require('puppeteer');
 const yargs = require('yargs/yargs')
 const { hideBin } = require('yargs/helpers')
+const fs = require('fs');
 const argv = yargs(hideBin(process.argv))
   .array('srcPath')
   .required('url')
   .argv
-const fs = require('fs');
 
-let srcCode = '';
-if (argv.srcPath) {
-  srcCode = fs.readFileSync(argv.srcPath).toString();
-} else if (argv.src) {
-  srcCode = argv.src;
-} else {
-  console.error('missing source code. --url, --src or --srcPath');
+let srcCodes = [];
+argv.srcPath.forEach(path => {
+  srcCodes.push(fs.readFileSync(path).toString());
+})
+if (argv.src) {
+  srcCodes.push(argv.src);
+}
+if (srcCodes.length === 0) {
+  console.error('missing source code');
   process.exit(1);
 }
 
@@ -28,7 +30,9 @@ if (argv.srcPath) {
   const page = (await browser.pages())[0];
   // const page = await browser.newPage();
   await page.goto(argv.url);
-  await page.addScriptTag({content: srcCode});
+  for (const srcCode of srcCodes) {
+    await page.addScriptTag({content: srcCode});
+  }
   page.on('dialog', async dialog => {
     await dialog.dismiss();
   })
