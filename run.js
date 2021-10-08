@@ -7,7 +7,10 @@ Run a source code on web page. The source code must define a main function with 
 const puppeteer = require('puppeteer');
 const yargs = require('yargs/yargs')
 const { hideBin } = require('yargs/helpers')
-const argv = yargs(hideBin(process.argv)).argv
+const argv = yargs(hideBin(process.argv))
+  .array('srcPath')
+  .required('url')
+  .argv
 const fs = require('fs');
 
 let srcCode = '';
