@@ -14,9 +14,11 @@ const argv = yargs(hideBin(process.argv))
   .argv
 
 let srcCodes = [];
-argv.srcPath.forEach(path => {
-  srcCodes.push(fs.readFileSync(path).toString());
-})
+if (argv.srcPath) {
+  argv.srcPath.forEach(path => {
+    srcCodes.push(fs.readFileSync(path).toString());
+  })
+}
 if (argv.src) {
   srcCodes.push(argv.src);
 }
